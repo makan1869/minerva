@@ -10,11 +10,13 @@ public class Activity {
     @Id
     @GeneratedValue
     Long id;
+    String service;
     String action;
     String name;
     String album;
     String publisher;
     String aggregator;
+    String date;
     Date dateCreated;
 
 
@@ -75,5 +77,21 @@ public class Activity {
 
     public void setDateCreated(Date dateCreated) {
         this.dateCreated = dateCreated;
+    }
+
+    public String getService() {
+        return service;
+    }
+
+    public void setService(String service) {
+        this.service = service;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }

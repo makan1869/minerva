@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en" ng-app="app">
+<head>
+    <link rel="stylesheet"
+          href="//cdn.rawgit.com/angular-ui/bower-ui-grid/master/ui-grid.min.css">
+    <script
+            src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+    <script
+            src="//cdn.rawgit.com/angular-ui/bower-ui-grid/master/ui-grid.min.js"></script>
+    <script th:src="@{/js/app.js}"></script>
+</head>
+<body>
+<div ng-controller="ActivityCtrl as vm">
+    <div ui-grid="gridOptions" class="grid" ui-grid-pagination></div>
+</div>
+</body>
+</html>
