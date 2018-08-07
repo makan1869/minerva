@@ -36,10 +36,10 @@ public class User implements UserDetails{
 	private String firstName;
 	private String lastName;
 
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
 	private Set<String> keywords;
 
-	@ManyToMany(cascade = CascadeType.MERGE)
+	@ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
 	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles;
 
@@ -69,17 +69,17 @@ public class User implements UserDetails{
 
 	@Override
 	public boolean isAccountNonExpired() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -136,6 +136,17 @@ public class User implements UserDetails{
 			this.roles.add(role);
 		}
 	}
+
+
+	public void addKeyword(String keyword) {
+		if(this.keywords == null) {
+			this.keywords = new HashSet<>();
+		}
+		if(! this.keywords.contains(keyword)) {
+			this.keywords.add(keyword);
+		}
+	}
+
 
 	public Set<String> getKeywords() {
 		return keywords;

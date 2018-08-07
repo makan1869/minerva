@@ -50,15 +50,11 @@ public class Role implements GrantedAuthority{
 		if (o == null || getClass() != o.getClass()) return false;
 
 		Role role = (Role) o;
-
-		if (id != role.id) return false;
 		return authority != null ? authority.equals(role.authority) : role.authority == null;
 	}
 
 	@Override
 	public int hashCode() {
-		int result = id;
-		result = 31 * result + (authority != null ? authority.hashCode() : 0);
-		return result;
+		return  (authority != null ? authority.hashCode() : 0);
 	}
 }

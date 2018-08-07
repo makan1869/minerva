@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 public class ActivityServiceImpl implements ActivityService {
 
@@ -22,6 +24,12 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public Page<Activity> findPaginated(int page, int size) {
         return activityRepository.findAll(new PageRequest(page, size));
+    }
+
+    @Override
+    public Page<Activity> findPaginatedByKeyword(Set<String> keywords, int page, int size) {
+        return activityRepository.findAllByKeyword(keywords, new PageRequest(page, size));
+
     }
 
 }

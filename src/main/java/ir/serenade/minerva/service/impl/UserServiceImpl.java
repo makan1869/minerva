@@ -9,6 +9,9 @@ import ir.serenade.minerva.repository.RoleRepository;
 import ir.serenade.minerva.repository.UserRepository;
 import ir.serenade.minerva.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -36,4 +39,13 @@ public class UserServiceImpl implements UserService {
 		userRepository.save(user);
 	}
 
+	@Override
+	public User loadUserByUsername(String s) throws UsernameNotFoundException {
+		User user =  findUserByEmail(s);
+		if(user == null) {
+			throw new UsernameNotFoundException("User "+ s + " Not Found");
+		} else {
+			return user;
+		}
+	}
 }
