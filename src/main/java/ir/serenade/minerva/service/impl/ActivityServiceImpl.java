@@ -6,6 +6,8 @@ import ir.serenade.minerva.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -19,6 +21,11 @@ public class ActivityServiceImpl implements ActivityService {
     public Activity save(Activity activity) {
         return activityRepository.save(activity);
 
+    }
+
+    @Override
+    public DataTablesOutput<Activity> findAll(DataTablesInput input) {
+        return activityRepository.findAll(input);
     }
 
     @Override

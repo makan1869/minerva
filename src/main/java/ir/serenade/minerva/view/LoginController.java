@@ -57,7 +57,8 @@ public class LoginController {
 		return modelAndView;
 	}
 	*/
-	
+
+	/*
 	@RequestMapping(value="/admin/home", method = RequestMethod.GET)
 	public ModelAndView home(){
 		ModelAndView modelAndView = new ModelAndView();
@@ -68,6 +69,18 @@ public class LoginController {
 		modelAndView.setViewName("admin/activities");
 		return modelAndView;
 	}
+
+	@RequestMapping(value="/admin/list", method = RequestMethod.GET)
+	public ModelAndView listActivities(){
+		ModelAndView modelAndView = new ModelAndView();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUserByEmail(auth.getName());
+		modelAndView.addObject("userName", "Welcome " + user.getFirstName() + " " + user.getLastName() + " (" + user.getEmailAddress() + ")");
+		modelAndView.addObject("adminMessage","Content Available Only for Users with Admin Role");
+		modelAndView.setViewName("admin/activities-list");
+		return modelAndView;
+	}
+	*/
 	
 
 }

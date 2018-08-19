@@ -4,13 +4,17 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
+import javax.persistence.GenerationType;
 import java.util.Date;
 
 @Entity
 public class Activity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+    String author;
+    String artist;
+    String bookPublisher;
     String service;
     String action;
     String name;
@@ -94,5 +98,30 @@ public class Activity {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getArtist() {
+        return artist;
+    }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
+    }
+
+    public String getBookPublisher() {
+        return bookPublisher;
+    }
+
+    public void setBookPublisher(String bookPublisher) {
+        this.bookPublisher = bookPublisher;
     }
 }
