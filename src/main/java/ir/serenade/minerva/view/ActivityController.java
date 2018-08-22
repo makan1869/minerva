@@ -1,6 +1,7 @@
 package ir.serenade.minerva.view;
 
 import ir.serenade.minerva.domain.Activity;
+import ir.serenade.minerva.domain.AggregatedActivity;
 import ir.serenade.minerva.domain.Role;
 import ir.serenade.minerva.domain.User;
 import ir.serenade.minerva.exception.MyResourceNotFoundException;
@@ -28,14 +29,45 @@ public class ActivityController {
 
     
 
-    @RequestMapping(value = "/rest/activities", method = RequestMethod.GET)
+    @RequestMapping(value = "/rest/activities/list", method = RequestMethod.GET)
     public DataTablesOutput<Activity> list(@Valid DataTablesInput input) {
-        return activityService.findAll(input);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(auth.isAuthenticated()) {
+            User currentUser = (User) auth.getPrincipal();
+            if (currentUser.getAuthorities().contains(new Role("ROLE_ADMIN"))) {
+                return activityService.findAll(input);
+            } else {
+                return activityService.findAll(input, currentUser);
+            }
+        } else {
+            throw new ResourceNotAuthorizedException();
+        }
+
+
     }
 
+    @RequestMapping(value = "/rest/activities/aggregated", method = RequestMethod.GET)
+    public DataTablesOutput<AggregatedActivity> aggregatedList(@Valid DataTablesInput input) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(auth.isAuthenticated()) {
+            User currentUser = (User) auth.getPrincipal();
+            if (currentUser.getAuthorities().contains(new Role("ROLE_ADMIN"))) {
+                return activityService.findAllAggregatedActivities(input);
+            } else {
+                return activityService.findAllAggregatedActivities(input, currentUser);
+            }
+        } else {
+            throw new ResourceNotAuthorizedException();
+        }
+
+    }
+
+
+    /*
     @RequestMapping(value = "/rest/activities", method = RequestMethod.POST)
     public DataTablesOutput<Activity> listPOST(@Valid @RequestBody DataTablesInput input) {
         return activityService.findAll(input);
     }
+    */
 
 }

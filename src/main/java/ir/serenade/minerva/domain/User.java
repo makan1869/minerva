@@ -1,8 +1,6 @@
 package ir.serenade.minerva.domain;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import javax.persistence.*;
 
@@ -37,7 +35,7 @@ public class User implements UserDetails{
 	private String lastName;
 
 	@ElementCollection(fetch = FetchType.EAGER)
-	private Set<String> keywords;
+	private Map<String, String> keywords;
 
 	@ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
 	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -138,17 +136,17 @@ public class User implements UserDetails{
 	}
 
 
-	public void addKeyword(String keyword) {
+	public void addKeyword(String key, String value) {
 		if(this.keywords == null) {
-			this.keywords = new HashSet<>();
+			this.keywords = new HashMap<>();
 		}
-		if(! this.keywords.contains(keyword)) {
-			this.keywords.add(keyword);
+		if(! this.keywords.containsKey(key)) {
+			this.keywords.put(key, value);
 		}
 	}
 
 
-	public Set<String> getKeywords() {
+	public Map<String, String> getKeywords() {
 		return keywords;
 	}
 }

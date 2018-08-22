@@ -23,8 +23,8 @@
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="/activities/index">Basic <span class="sr-only">(current)</span></a></li>
-                <li ><a href="/activities/aggregated">Aggregated</a></li>
+                <li><a href="/activities/index">Basic</a></li>
+                <li class="active"><a href="/activities/aggregated">Aggregated <span class="sr-only">(current)</span></a></li>
             </ul>
         </div>
     </div>
@@ -34,12 +34,13 @@
     <table id="activities" class="table">
         <thead>
         <tr>
-            <th>ID</th>
-            <th>Service</th>
-            <th>Name</th>
-            <th>Album</th>
             <th>Date</th>
+            <th>Service</th>
+            <th>Album</th>
+            <th>Book Publisher</th>
             <th>Publisher</th>
+            <th>Count</th>
+
         </tr>
         </thead>
     </table>
@@ -52,27 +53,27 @@
 <script type="text/javascript" th:src="@{/js/jquery.spring-friendly.js}"></script>
 <script>
     $('table#activities').DataTable({
-        ajax: '/rest/activities/list',
+        ajax: '/rest/activities/aggregated',
         serverSide: true,
         columns: [
             {
-                data: 'id'
+                data: 'date'
             },
             {
                 data: 'service'
             },
             {
-                data: 'name'
-            },
-            {
                 data: 'album'
             },
             {
-                data: 'dateCreated'
+                data: 'bookPublisher'
             },
             {
                 data: 'publisher',
                 render: function (data) { return data; }
+            },
+            {
+                data: 'count'
             }
         ]
     });

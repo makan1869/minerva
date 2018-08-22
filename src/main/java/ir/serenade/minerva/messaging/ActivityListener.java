@@ -39,7 +39,6 @@ public class ActivityListener {
             activity.setDate(dateFormat.format(activity.getDateCreated()));
 
             activity = activityService.save(activity);
-            System.out.println("Activity " + activity.getId());
         }
 
     }
