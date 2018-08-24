@@ -36,11 +36,12 @@ public class ApplicationStartupConfig implements ApplicationListener<Application
             userRole = roleRepository.save(new Role("ROLE_USER"));
         }
 
-        if (userService.findUserByEmail("admin@aban.io") == null) {
+        if (userService.findUserByEmail("hanieh@aban.io") == null) {
             User admin = new User();
-            admin.setEmailAddress("admin@aban.io");
+            admin.setEmailAddress("hanieh@aban.io");
+            admin.addKeyword("publisher", "آبان");
             admin.setPassword("password");
-            admin.addRole(adminRole);
+            admin.addRole(userRole);
             userService.saveUser(admin);
         }
 
