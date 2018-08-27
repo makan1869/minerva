@@ -5,24 +5,73 @@ import java.util.Date;
 /**
  * Created by serenade on 8/10/18.
  */
-public interface AggregatedActivity {
-    public Long getCount();
+public class AggregatedActivity {
 
-    public String getAuthor();
+    private long count;
+    private String author;
+    private String artist;
+    private String bookPublisher;
+    private String service;
+    private String action;
+    private String album;
+    private String publisher;
+    private String aggregator;
+    private String date;
 
-    public String getArtist();
 
-    public String getBookPublisher();
+    public AggregatedActivity() {
+    }
 
-    public String getService();
+    public AggregatedActivity(String author, String artist, String bookPublisher, String service, String action, String album, String publisher, String aggregator, String date, long count) {
+        this.count = count;
+        this.author = author;
+        this.artist = artist;
+        this.bookPublisher = bookPublisher;
+        this.service = service;
+        this.action = action;
+        this.album = album;
+        this.publisher = publisher;
+        this.aggregator = aggregator;
+        this.date = date;
+    }
 
-    public String getAction();
+    public long getCount() {
+        return count;
+    }
 
-    public String getAlbum();
+    public String getAuthor() {
+        return author;
+    }
 
-    public String getPublisher();
+    public String getArtist() {
+        return artist;
+    }
 
-    public String getAggregator();
+    public String getBookPublisher() {
+        return bookPublisher;
+    }
 
-    public String getDate();
+    public String getService() {
+        return service;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public String getAlbum() {
+        return album;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public String getAggregator() {
+        return aggregator;
+    }
+
+    public String getDate() {
+        return date;
+    }
 }
