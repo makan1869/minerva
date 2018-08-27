@@ -24,4 +24,7 @@ public interface ActivityRepository extends DataTablesRepository<Activity, Long>
 
     @Query("select COUNT(a) as count, a.author as author, a.artist as artists, a.bookPublisher as bookPublisher, a.service as service, a.action as action, a.album as album, a.publisher as publisher, a.aggregator as aggregator, a.date as date from Activity a GROUP BY a.author, a.artist, a.bookPublisher, a.service, a.action, a.album, a.publisher, a.aggregator, a.date")
     Page<AggregatedActivity> findAllAggregatedActivities(Pageable pageRequest);
+
+    @Query("select COUNT(a) as count, a.author as author, a.artist as artists, a.bookPublisher as bookPublisher, a.service as service, a.action as action, a.album as album, a.publisher as publisher, a.aggregator as aggregator, a.date as date from Activity a WHERE date = :date GROUP BY a.author, a.artist, a.bookPublisher, a.service, a.action, a.album, a.publisher, a.aggregator, a.date")
+    Page<AggregatedActivity> findAllDailyActivities(String date, Pageable pageRequest);
 }

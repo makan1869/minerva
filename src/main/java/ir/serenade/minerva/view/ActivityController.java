@@ -62,6 +62,22 @@ public class ActivityController {
 
     }
 
+    @RequestMapping(value = "/rest/activities/daily", method = RequestMethod.GET)
+    public DataTablesOutput<AggregatedActivity> dailyList(@Valid DataTablesInput input) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(auth.isAuthenticated()) {
+            User currentUser = (User) auth.getPrincipal();
+            if (currentUser.getAuthorities().contains(new Role("ROLE_ADMIN"))) {
+                return activityService.findAllDailyActivities(input);
+            } else {
+                return activityService.findAllDailyActivities(input, currentUser);
+            }
+        } else {
+            throw new ResourceNotAuthorizedException();
+        }
+
+    }
+
 
     /*
     @RequestMapping(value = "/rest/activities", method = RequestMethod.POST)

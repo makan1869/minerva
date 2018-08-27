@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css"/>
@@ -23,8 +24,9 @@
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="/activities/index">Basic <span class="sr-only">(current)</span></a></li>
+                <li sec:authorize="hasRole('ROLE_ADMIN')" class="active"><a href="/activities/index">Basic <span class="sr-only">(current)</span></a></li>
                 <li ><a href="/activities/aggregated">Aggregated</a></li>
+                <li ><a href="/activities/daily">Daily</a></li>
             </ul>
         </div>
     </div>
@@ -38,6 +40,8 @@
             <th>Service</th>
             <th>Name</th>
             <th>Album</th>
+            <th>Artist</th>
+            <th>Author</th>
             <th>Date</th>
             <th>Publisher</th>
         </tr>
@@ -54,6 +58,7 @@
     $('table#activities').DataTable({
         ajax: '/rest/activities/list',
         serverSide: true,
+        searching: false,
         columns: [
             {
                 data: 'id'
@@ -66,6 +71,12 @@
             },
             {
                 data: 'album'
+            },
+            {
+                data: 'artist'
+            },
+            {
+                data: 'author'
             },
             {
                 data: 'dateCreated'

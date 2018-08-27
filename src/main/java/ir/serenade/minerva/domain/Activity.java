@@ -12,6 +12,7 @@ public class Activity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+    String source;
     String author;
     String artist;
     String bookPublisher;
@@ -123,5 +124,13 @@ public class Activity {
 
     public void setBookPublisher(String bookPublisher) {
         this.bookPublisher = bookPublisher;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 }
