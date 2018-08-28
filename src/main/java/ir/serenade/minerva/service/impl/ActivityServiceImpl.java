@@ -1,9 +1,9 @@
 package ir.serenade.minerva.service.impl;
 
-import ir.serenade.minerva.domain.Activity;
-import ir.serenade.minerva.domain.AggregatedActivity;
-import ir.serenade.minerva.domain.User;
+import ir.serenade.minerva.domain.*;
 import ir.serenade.minerva.repository.ActivityRepository;
+import ir.serenade.minerva.repository.DailyActivitiesRepository;
+import ir.serenade.minerva.repository.NightlyStatisticsRepository;
 import ir.serenade.minerva.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,22 +32,140 @@ public class ActivityServiceImpl implements ActivityService {
     @Autowired
     ActivityRepository activityRepository;
 
+    @Autowired
+    DailyActivitiesRepository dailyActivitiesRepository;
+
+    @Autowired
+    NightlyStatisticsRepository nightlyStatisticsRepository;
+
     @PersistenceContext
     private EntityManager entityManager;
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd");
 
-    public Activity save(Activity activity) {
+    public Activity saveActivity(Activity activity) {
         return activityRepository.save(activity);
 
     }
 
     @Override
+    public DailyActivity saveDailyActivity(DailyActivity activity) {
+        return dailyActivitiesRepository.save(activity);
+    }
+
+    @Override
+    public DataTablesOutput<DailyActivity> findAllDailyActivities(DataTablesInput input) {
+        return dailyActivitiesRepository.findAll(input);
+    }
+
+    @Override
+    public DataTablesOutput<DailyActivity> findAllDailyActivities(DataTablesInput input, User user) {
+        DataTablesOutput<DailyActivity> output = new DataTablesOutput<>();
+        output.setDraw(input.getDraw());
+        if (input.getLength() == 0) {
+            return output;
+        }
+
+
+        SpecificationBuilder<DailyActivity> specificationBuilder = new SpecificationBuilder<>(input);
+        Pageable pageable = specificationBuilder.createPageable();
+
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<DailyActivity> query = builder.createQuery(DailyActivity.class);
+        CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
+        Root r = query.from(DailyActivity.class);
+        Root _r = countQuery.from(DailyActivity.class);
+
+
+        countQuery.select(builder.count(countQuery.from(DailyActivity.class)));
+        Predicate predicate = builder.conjunction();
+        Predicate _predicate = builder.conjunction();
+        Map<String, String> keywords = user.getKeywords();
+        for(String key : keywords.keySet()) {
+            predicate = builder.and(predicate, builder.equal(r.get(key), keywords.get(key)));
+            _predicate = builder.and(_predicate, builder.equal(_r.get(key), keywords.get(key)));
+        }
+        query.where(predicate);
+        countQuery.where(_predicate);
+        Long totalRecords = entityManager.createQuery(countQuery).getSingleResult();
+        List<DailyActivity> result = entityManager.createQuery(query).setFirstResult((int)pageable.getOffset())
+                .setMaxResults(pageable.getPageSize()).getResultList();
+
+
+        output.setData(result);
+        output.setRecordsTotal(totalRecords);
+        output.setRecordsFiltered(totalRecords);
+
+
+        return output;
+    }
+
+    @Override
+    public DataTablesOutput<NightlyStatistics> findAllNightlyStatistics(DataTablesInput input) {
+        return nightlyStatisticsRepository.findAll(input);
+    }
+
+    @Override
+    public DataTablesOutput<NightlyStatistics> findAllNightlyStatistics(DataTablesInput input, User user) {
+        DataTablesOutput<NightlyStatistics> output = new DataTablesOutput<>();
+        output.setDraw(input.getDraw());
+        if (input.getLength() == 0) {
+            return output;
+        }
+
+
+        SpecificationBuilder<NightlyStatistics> specificationBuilder = new SpecificationBuilder<>(input);
+        Pageable pageable = specificationBuilder.createPageable();
+
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<NightlyStatistics> query = builder.createQuery(NightlyStatistics.class);
+        CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
+        Root r = query.from(NightlyStatistics.class);
+        Root _r = countQuery.from(NightlyStatistics.class);
+
+
+        countQuery.select(builder.count(countQuery.from(NightlyStatistics.class)));
+        Predicate predicate = builder.conjunction();
+        Predicate _predicate = builder.conjunction();
+        Map<String, String> keywords = user.getKeywords();
+        for(String key : keywords.keySet()) {
+            predicate = builder.and(predicate, builder.equal(r.get(key), keywords.get(key)));
+            _predicate = builder.and(_predicate, builder.equal(_r.get(key), keywords.get(key)));
+        }
+        query.where(predicate);
+        countQuery.where(_predicate);
+        Long totalRecords = entityManager.createQuery(countQuery).getSingleResult();
+        List<NightlyStatistics> result = entityManager.createQuery(query).setFirstResult((int)pageable.getOffset())
+                .setMaxResults(pageable.getPageSize()).getResultList();
+
+
+        output.setData(result);
+        output.setRecordsTotal(totalRecords);
+        output.setRecordsFiltered(totalRecords);
+
+
+        return output;
+    }
+
+    @Override
+    public DataTablesOutput<NightlyStatistics> findAllNightlyStatisticsByDate(DataTablesInput input) {
+        return null;
+    }
+
+    @Override
+    public DataTablesOutput<NightlyStatistics> findAllNightlyStatisticsByDate(DataTablesInput input, User user) {
+        return null;
+    }
+
+
+
+
+
+
     public DataTablesOutput<Activity> findAll(DataTablesInput input) {
         return activityRepository.findAll(input);
     }
 
-    @Override
     public DataTablesOutput<Activity> findAll(DataTablesInput input, User user) {
 
         DataTablesOutput<Activity> output = new DataTablesOutput<>();
@@ -90,7 +208,6 @@ public class ActivityServiceImpl implements ActivityService {
         return output;
     }
 
-    @Override
     public DataTablesOutput<AggregatedActivity> findAllAggregatedActivities(DataTablesInput input) {
         DataTablesOutput<AggregatedActivity> output = new DataTablesOutput<>();
         output.setDraw(input.getDraw());
@@ -118,7 +235,6 @@ public class ActivityServiceImpl implements ActivityService {
 
 
 
-    @Override
     public DataTablesOutput<AggregatedActivity> findAllAggregatedActivities(DataTablesInput input, User user) {
         DataTablesOutput<AggregatedActivity> output = new DataTablesOutput<>();
         output.setDraw(input.getDraw());
@@ -171,6 +287,7 @@ public class ActivityServiceImpl implements ActivityService {
         return output;
     }
 
+    /*
     @Override
     public DataTablesOutput<AggregatedActivity> findAllDailyActivities(DataTablesInput input) {
 
@@ -262,7 +379,8 @@ public class ActivityServiceImpl implements ActivityService {
         return output;
     }
 
-    @Override
+    */
+
     public List<AggregatedActivity> findAllDailyActivities(String date) {
         date = dateFormat.format(new Date());
         if(date != null && date.length() > 0) {
@@ -288,7 +406,6 @@ public class ActivityServiceImpl implements ActivityService {
         return result;
     }
 
-    @Override
     public List<AggregatedActivity> findAllDailyActivities(User user, String date) {
         date = dateFormat.format(new Date());
         if(date != null && date.length() > 0) {
@@ -319,12 +436,10 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
 
-    @Override
     public Page<Activity> findPaginated(int page, int size) {
         return activityRepository.findAll(new PageRequest(page, size));
     }
 
-    @Override
     public Page<Activity> findPaginatedByKeyword(Set<String> keywords, int page, int size) {
         return activityRepository.findAllByKeyword(keywords, new PageRequest(page, size));
 

@@ -48,22 +48,4 @@ public class HomeController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/activities/download/{date}", method = RequestMethod.GET)
-    public String download(@PathVariable("itemid") String date, Model model) {
-        List<AggregatedActivity> activities = new ArrayList<>();
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(auth.isAuthenticated()) {
-            User currentUser = (User) auth.getPrincipal();
-            if (currentUser.getAuthorities().contains(new Role("ROLE_ADMIN"))) {
-                activities = activityService.findAllDailyActivities(date);
-            } else {
-                activities = activityService.findAllDailyActivities(currentUser, date);
-            }
-            model.addAttribute("activities", activities);
-            return "";
-        } else {
-            throw new ResourceNotAuthorizedException();
-        }
-
-    }
 }

@@ -1,9 +1,6 @@
 package ir.serenade.minerva.view;
 
-import ir.serenade.minerva.domain.Activity;
-import ir.serenade.minerva.domain.AggregatedActivity;
-import ir.serenade.minerva.domain.Role;
-import ir.serenade.minerva.domain.User;
+import ir.serenade.minerva.domain.*;
 import ir.serenade.minerva.exception.MyResourceNotFoundException;
 import ir.serenade.minerva.exception.ResourceNotAuthorizedException;
 import ir.serenade.minerva.service.ActivityService;
@@ -30,14 +27,14 @@ public class ActivityController {
     
 
     @RequestMapping(value = "/rest/activities/list", method = RequestMethod.GET)
-    public DataTablesOutput<Activity> list(@Valid DataTablesInput input) {
+    public DataTablesOutput<DailyActivity> list(@Valid DataTablesInput input) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if(auth.isAuthenticated()) {
             User currentUser = (User) auth.getPrincipal();
             if (currentUser.getAuthorities().contains(new Role("ROLE_ADMIN"))) {
-                return activityService.findAll(input);
+                return activityService.findAllDailyActivities(input);
             } else {
-                return activityService.findAll(input, currentUser);
+                return activityService.findAllDailyActivities(input, currentUser);
             }
         } else {
             throw new ResourceNotAuthorizedException();
@@ -47,14 +44,14 @@ public class ActivityController {
     }
 
     @RequestMapping(value = "/rest/activities/aggregated", method = RequestMethod.GET)
-    public DataTablesOutput<AggregatedActivity> aggregatedList(@Valid DataTablesInput input) {
+    public DataTablesOutput<NightlyStatistics> aggregatedList(@Valid DataTablesInput input) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if(auth.isAuthenticated()) {
             User currentUser = (User) auth.getPrincipal();
             if (currentUser.getAuthorities().contains(new Role("ROLE_ADMIN"))) {
-                return activityService.findAllAggregatedActivities(input);
+                return activityService.findAllNightlyStatistics(input);
             } else {
-                return activityService.findAllAggregatedActivities(input, currentUser);
+                return activityService.findAllNightlyStatistics(input, currentUser);
             }
         } else {
             throw new ResourceNotAuthorizedException();
@@ -63,14 +60,14 @@ public class ActivityController {
     }
 
     @RequestMapping(value = "/rest/activities/daily", method = RequestMethod.GET)
-    public DataTablesOutput<AggregatedActivity> dailyList(@Valid DataTablesInput input) {
+    public DataTablesOutput<NightlyStatistics> dailyList(@Valid DataTablesInput input) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if(auth.isAuthenticated()) {
             User currentUser = (User) auth.getPrincipal();
             if (currentUser.getAuthorities().contains(new Role("ROLE_ADMIN"))) {
-                return activityService.findAllDailyActivities(input);
+                return activityService.findAllNightlyStatisticsByDate(input);
             } else {
-                return activityService.findAllDailyActivities(input, currentUser);
+                return activityService.findAllNightlyStatisticsByDate(input, currentUser);
             }
         } else {
             throw new ResourceNotAuthorizedException();

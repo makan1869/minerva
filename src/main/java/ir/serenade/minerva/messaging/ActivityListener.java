@@ -2,8 +2,8 @@ package ir.serenade.minerva.messaging;
 
 
 import ir.serenade.minerva.domain.Activity;
+import ir.serenade.minerva.domain.DailyActivity;
 import ir.serenade.minerva.service.ActivityService;
-import org.apache.activemq.ActiveMQSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.messaging.handler.annotation.Headers;
@@ -53,7 +53,8 @@ public class ActivityListener {
             activity.setSource(source);
             activity.setDate(dateFormat.format(activity.getDateCreated()));
 
-            activity = activityService.save(activity);
+            activity = activityService.saveActivity(activity);
+            activityService.saveDailyActivity(new DailyActivity(activity));
         }
     }
 
