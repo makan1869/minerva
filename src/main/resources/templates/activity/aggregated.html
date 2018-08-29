@@ -59,7 +59,7 @@
     $('table#activities').DataTable({
         ajax: '/rest/activities/aggregated',
         serverSide: true,
-        searching: false,
+        searching: true,
         columns: [
             {
                 data: 'date'

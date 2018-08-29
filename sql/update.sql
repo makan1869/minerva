@@ -1,0 +1,2 @@
+insert into nightly_statistics (count, date, aggregator, album, artist, author, book_publisher, publisher, service) select count(*) as count, date, aggregator, album, artist, author, book_publisher, publisher, service from activity where date_created > '2018-08-28' and date_created < '2018-08-29'  group by date, aggregator, album, artist, author, book_publisher, publisher, service;
+delete from daily_activity where date_created < '2018-08-29';
