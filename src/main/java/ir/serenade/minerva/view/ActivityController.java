@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 
 /**
  * Created by serenade on 8/6/18.
@@ -59,15 +60,15 @@ public class ActivityController {
 
     }
 
-    @RequestMapping(value = "/rest/activities/daily", method = RequestMethod.GET)
-    public DataTablesOutput<NightlyStatistics> dailyList(@Valid DataTablesInput input) {
+    @RequestMapping(value = "/rest/activities/daily/{from}/{to}", method = RequestMethod.GET)
+    public DataTablesOutput<NightlyStatistics> dailyList(@PathVariable("from") String from, @PathVariable("to") String to, @Valid DataTablesInput input ) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if(auth.isAuthenticated()) {
             User currentUser = (User) auth.getPrincipal();
             if (currentUser.getAuthorities().contains(new Role("ROLE_ADMIN"))) {
-                return activityService.findAllNightlyStatisticsByDate(input);
+                return activityService.findAllNightlyStatisticsByDate(input, from, to);
             } else {
-                return activityService.findAllNightlyStatisticsByDate(input, currentUser);
+                return activityService.findAllNightlyStatisticsByDate(input, from, to, currentUser);
             }
         } else {
             throw new ResourceNotAuthorizedException();

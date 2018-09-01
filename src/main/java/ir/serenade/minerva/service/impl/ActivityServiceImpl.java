@@ -148,12 +148,59 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public DataTablesOutput<NightlyStatistics> findAllNightlyStatisticsByDate(DataTablesInput input) {
-        return null;
+    public DataTablesOutput<NightlyStatistics> findAllNightlyStatisticsByDate(DataTablesInput input, String from, String to) {
+        System.out.println(from);
+        System.out.println(to);
+
+        if(to == null || to.equalsIgnoreCase("null")) {
+            to = dateFormat.format(new Date());
+        }
+        DataTablesOutput<NightlyStatistics> output = new DataTablesOutput<>();
+        output.setDraw(input.getDraw());
+        if (input.getLength() == 0) {
+            return output;
+        }
+
+
+        SpecificationBuilder<NightlyStatistics> specificationBuilder = new SpecificationBuilder<>(input);
+        Pageable pageable = specificationBuilder.createPageable();
+
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<NightlyStatistics> query = builder.createQuery(NightlyStatistics.class);
+        CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
+        Root r = query.from(NightlyStatistics.class);
+
+
+        countQuery.select(builder.count(countQuery.from(NightlyStatistics.class)));
+        Predicate predicate = builder.conjunction();
+        Predicate _predicate = builder.conjunction();
+        if(from!= null && !from.equalsIgnoreCase("null")) {
+            predicate = builder.and(predicate, builder.greaterThanOrEqualTo(r.get("date"), from));
+            _predicate = builder.and(_predicate, builder.greaterThanOrEqualTo(r.get("date"), from));
+        }
+
+        if(to!= null && !to.equalsIgnoreCase("null")) {
+            predicate = builder.and(predicate, builder.lessThanOrEqualTo(r.get("date"), to));
+            _predicate = builder.and(_predicate, builder.lessThanOrEqualTo(r.get("date"), to));
+        }
+
+        query.where(predicate);
+        countQuery.where(_predicate);
+        Long totalRecords = entityManager.createQuery(countQuery).getSingleResult();
+        List<NightlyStatistics> result = entityManager.createQuery(query).setFirstResult((int)pageable.getOffset())
+                .setMaxResults(pageable.getPageSize()).getResultList();
+
+
+        output.setData(result);
+        output.setRecordsTotal(totalRecords);
+        output.setRecordsFiltered(totalRecords);
+
+
+        return output;
     }
 
     @Override
-    public DataTablesOutput<NightlyStatistics> findAllNightlyStatisticsByDate(DataTablesInput input, User user) {
+    public DataTablesOutput<NightlyStatistics> findAllNightlyStatisticsByDate(DataTablesInput input, String from, String to, User user) {
         return null;
     }
 

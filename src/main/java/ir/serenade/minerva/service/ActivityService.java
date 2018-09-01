@@ -17,8 +17,8 @@ public interface ActivityService {
     public DataTablesOutput<NightlyStatistics> findAllNightlyStatistics(DataTablesInput input);
     public DataTablesOutput<NightlyStatistics> findAllNightlyStatistics(DataTablesInput input, User user);
 
-    public DataTablesOutput<NightlyStatistics> findAllNightlyStatisticsByDate(DataTablesInput input);
-    public DataTablesOutput<NightlyStatistics> findAllNightlyStatisticsByDate(DataTablesInput input, User user);
+    public DataTablesOutput<NightlyStatistics> findAllNightlyStatisticsByDate(DataTablesInput input, String from, String to);
+    public DataTablesOutput<NightlyStatistics> findAllNightlyStatisticsByDate(DataTablesInput input, String from, String to, User user);
 
 
 }
