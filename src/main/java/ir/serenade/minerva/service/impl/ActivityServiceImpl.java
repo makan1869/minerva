@@ -197,7 +197,55 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     public DataTablesOutput<NightlyStatistics> findAllNightlyStatisticsByDate(DataTablesInput input, String from, String to, User user) {
-        return null;
+        System.out.println(from);
+        System.out.println(to);
+
+        if(to == null || to.equalsIgnoreCase("null")) {
+            to = dateFormat.format(new Date());
+        }
+        DataTablesOutput<NightlyStatistics> output = new DataTablesOutput<>();
+        output.setDraw(input.getDraw());
+        if (input.getLength() == 0) {
+            return output;
+        }
+
+
+        SpecificationBuilder<NightlyStatistics> specificationBuilder = new SpecificationBuilder<>(input);
+        Pageable pageable = specificationBuilder.createPageable();
+
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<NightlyStatistics> query = builder.createQuery(NightlyStatistics.class);
+        Root r = query.from(NightlyStatistics.class);
+
+
+        Predicate predicate = builder.conjunction();
+        if(from!= null && !from.equalsIgnoreCase("null")) {
+            predicate = builder.and(predicate, builder.greaterThanOrEqualTo(r.get("date"), from));
+        }
+
+        if(to!= null && !to.equalsIgnoreCase("null")) {
+            predicate = builder.and(predicate, builder.lessThanOrEqualTo(r.get("date"), to));
+        }
+
+        Map<String, String> keywords = user.getKeywords();
+        for(String key : keywords.keySet()) {
+            predicate = builder.and(predicate, builder.equal(r.get(key), keywords.get(key)));
+        }
+
+        query.where(predicate);
+        List<NightlyStatistics> result = entityManager.createQuery(query).setFirstResult((int)pageable.getOffset())
+                .setMaxResults(pageable.getPageSize()).getResultList();
+
+
+        output.setData(result);
+        CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
+        countQuery.select(builder.count(countQuery.from(NightlyStatistics.class))).where(predicate);
+        Long totalRecords = entityManager.createQuery(countQuery).getSingleResult();
+        output.setRecordsTotal(totalRecords);
+        output.setRecordsFiltered(totalRecords);
+
+
+        return output;
     }
 
     @Override
@@ -219,6 +267,12 @@ public class ActivityServiceImpl implements ActivityService {
             predicate = builder.and(predicate, builder.lessThanOrEqualTo(r.get("date"), to));
         }
 
+        if (!user.getAuthorities().contains(new Role("ROLE_ADMIN"))) {
+            Map<String, String> keywords = user.getKeywords();
+            for(String key : keywords.keySet()) {
+                predicate = builder.and(predicate, builder.equal(r.get(key), keywords.get(key)));
+            }
+        }
         query.where(predicate);
         List<NightlyStatistics> result = entityManager.createQuery(query).getResultList();
 
