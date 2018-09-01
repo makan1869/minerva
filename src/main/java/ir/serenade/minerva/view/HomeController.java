@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -46,6 +47,18 @@ public class HomeController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("activity/daily");
         return modelAndView;
+    }
+
+    @GetMapping(value="/activities/export/{from}/{to}")
+    public NightlyStatisticsExcelView activityDaily(@PathVariable("from") String from, @PathVariable("to") String to, Model model){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(auth.isAuthenticated() && auth.getPrincipal() != "anonymousUser") {
+            User currentUser = (User) auth.getPrincipal();
+            model.addAttribute("activities", activityService.findAllNightlyStatisticsByUserAndDate(currentUser, from, to));
+            return new NightlyStatisticsExcelView() ;
+        } else {
+            throw new ResourceNotAuthorizedException();
+        }
     }
 
 }

@@ -40,7 +40,8 @@
             <input type="text" id="from"> &nbsp;
             <span> To </span>
             <input type="text" id="to"> &nbsp;
-            <input type="button" value="Filter" id = "filter">
+            <input type="button" value="Filter" id = "filter"> &nbsp;
+            <input type="button" value="Export" id = "export">
 
         </div>
     </div>
@@ -122,6 +123,23 @@
             }
             console.log("From :" + from + ", To :" + to);
             datatables.ajax.url('/rest/activities/daily/' + from + '/' + to).load();
+        })
+        $('#export').click(function() {
+            if(datatables.count() < 65535) {
+                var from = $('#from').val();
+                if(from.length == 0) {
+                    from = null
+                }
+                var to = $('#to').val();
+                if(to.length == 0) {
+                    to = null
+                }
+                console.log("From :" + from + ", To :" + to);
+                window.open('/activities/export/' + from + '/' + to, 'Export Window');
+            } else {
+                alert("Number of rows exceeds Excel Capability");
+            }
+
         })
     } );
 </script>

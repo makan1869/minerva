@@ -63,7 +63,7 @@ public class ActivityController {
     @RequestMapping(value = "/rest/activities/daily/{from}/{to}", method = RequestMethod.GET)
     public DataTablesOutput<NightlyStatistics> dailyList(@PathVariable("from") String from, @PathVariable("to") String to, @Valid DataTablesInput input ) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(auth.isAuthenticated()) {
+        if(auth.isAuthenticated() && auth.getPrincipal() != "anonymousUser") {
             User currentUser = (User) auth.getPrincipal();
             if (currentUser.getAuthorities().contains(new Role("ROLE_ADMIN"))) {
                 return activityService.findAllNightlyStatisticsByDate(input, from, to);

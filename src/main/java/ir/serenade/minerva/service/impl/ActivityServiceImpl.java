@@ -167,31 +167,27 @@ public class ActivityServiceImpl implements ActivityService {
 
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<NightlyStatistics> query = builder.createQuery(NightlyStatistics.class);
-        CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
         Root r = query.from(NightlyStatistics.class);
 
 
-        countQuery.select(builder.count(countQuery.from(NightlyStatistics.class)));
         Predicate predicate = builder.conjunction();
-        Predicate _predicate = builder.conjunction();
         if(from!= null && !from.equalsIgnoreCase("null")) {
             predicate = builder.and(predicate, builder.greaterThanOrEqualTo(r.get("date"), from));
-            _predicate = builder.and(_predicate, builder.greaterThanOrEqualTo(r.get("date"), from));
         }
 
         if(to!= null && !to.equalsIgnoreCase("null")) {
             predicate = builder.and(predicate, builder.lessThanOrEqualTo(r.get("date"), to));
-            _predicate = builder.and(_predicate, builder.lessThanOrEqualTo(r.get("date"), to));
         }
 
         query.where(predicate);
-        countQuery.where(_predicate);
-        Long totalRecords = entityManager.createQuery(countQuery).getSingleResult();
         List<NightlyStatistics> result = entityManager.createQuery(query).setFirstResult((int)pageable.getOffset())
                 .setMaxResults(pageable.getPageSize()).getResultList();
 
 
         output.setData(result);
+        CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
+        countQuery.select(builder.count(countQuery.from(NightlyStatistics.class))).where(predicate);
+        Long totalRecords = entityManager.createQuery(countQuery).getSingleResult();
         output.setRecordsTotal(totalRecords);
         output.setRecordsFiltered(totalRecords);
 
@@ -204,9 +200,31 @@ public class ActivityServiceImpl implements ActivityService {
         return null;
     }
 
+    @Override
+    public List<NightlyStatistics> findAllNightlyStatisticsByUserAndDate(User user, String from, String to) {
+        if(to == null || to.equalsIgnoreCase("null")) {
+            to = dateFormat.format(new Date());
+        }
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<NightlyStatistics> query = builder.createQuery(NightlyStatistics.class);
+        Root r = query.from(NightlyStatistics.class);
 
 
+        Predicate predicate = builder.conjunction();
+        if(from!= null && !from.equalsIgnoreCase("null")) {
+            predicate = builder.and(predicate, builder.greaterThanOrEqualTo(r.get("date"), from));
+        }
 
+        if(to!= null && !to.equalsIgnoreCase("null")) {
+            predicate = builder.and(predicate, builder.lessThanOrEqualTo(r.get("date"), to));
+        }
+
+        query.where(predicate);
+        List<NightlyStatistics> result = entityManager.createQuery(query).getResultList();
+
+
+        return result;
+    }
 
 
     public DataTablesOutput<Activity> findAll(DataTablesInput input) {
