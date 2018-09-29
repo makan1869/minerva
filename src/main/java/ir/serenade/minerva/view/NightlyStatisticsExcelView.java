@@ -43,20 +43,22 @@ public class NightlyStatisticsExcelView extends AbstractXlsView{
         Row header = sheet.createRow(0);
         header.createCell(0).setCellValue("Date");
         header.getCell(0).setCellStyle(style);
-        header.createCell(1).setCellValue("Service");
+        header.createCell(1).setCellValue("Server");
         header.getCell(1).setCellStyle(style);
-        header.createCell(2).setCellValue("Aggregator");
+        header.createCell(2).setCellValue("Service");
         header.getCell(2).setCellStyle(style);
-        header.createCell(3).setCellValue("Book Publisher");
+        header.createCell(3).setCellValue("Aggregator");
         header.getCell(3).setCellStyle(style);
-        header.createCell(4).setCellValue("Publisher");
+        header.createCell(4).setCellValue("Book Publisher");
         header.getCell(4).setCellStyle(style);
-        header.createCell(5).setCellValue("Author");
+        header.createCell(5).setCellValue("Publisher");
         header.getCell(5).setCellStyle(style);
-        header.createCell(6).setCellValue("Artist");
+        header.createCell(6).setCellValue("Author");
         header.getCell(6).setCellStyle(style);
-        header.createCell(7).setCellValue("Count");
+        header.createCell(7).setCellValue("Artist");
         header.getCell(7).setCellStyle(style);
+        header.createCell(8).setCellValue("Count");
+        header.getCell(8).setCellStyle(style);
 
 
         int rowCount = 1;
@@ -64,13 +66,14 @@ public class NightlyStatisticsExcelView extends AbstractXlsView{
         for(NightlyStatistics activity : activities){
             Row userRow =  sheet.createRow(rowCount++);
             userRow.createCell(0).setCellValue(activity.getDate());
-            userRow.createCell(1).setCellValue(activity.getService());
-            userRow.createCell(2).setCellValue(activity.getAggregator());
-            userRow.createCell(3).setCellValue(activity.getBookPublisher());
-            userRow.createCell(4).setCellValue(activity.getPublisher());
-            userRow.createCell(5).setCellValue(activity.getAuthor());
-            userRow.createCell(6).setCellValue(activity.getArtist());
-            userRow.createCell(7).setCellValue(activity.getCount());
+            userRow.createCell(1).setCellValue(activity.getSource());
+            userRow.createCell(2).setCellValue(activity.getService());
+            userRow.createCell(3).setCellValue(activity.getAggregator());
+            userRow.createCell(4).setCellValue(activity.getBookPublisher());
+            userRow.createCell(5).setCellValue(activity.getPublisher());
+            userRow.createCell(6).setCellValue(activity.getAuthor());
+            userRow.createCell(7).setCellValue(activity.getArtist());
+            userRow.createCell(8).setCellValue(activity.getCount());
         }
 
     }

@@ -14,6 +14,7 @@ public class NightlyStatistics {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+    private String source;
     private long count;
     private String author;
     private String artist;
@@ -111,5 +112,13 @@ public class NightlyStatistics {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 }
